@@ -58,7 +58,8 @@ local create = coroutine.create
 local ValidTargetParts = {"Head", "HumanoidRootPart"}
 local PredictionAmount = 0.165
 
-local mouse_box = Drawing.new("Square")
+getgenv().mouse_box = Drawing.new("Square")
+local mouse_box = getgenv().mouse_box
 mouse_box.Visible = true 
 mouse_box.ZIndex = 999 
 mouse_box.Color = Color3.fromRGB(54, 57, 241)
