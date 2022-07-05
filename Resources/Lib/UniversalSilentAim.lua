@@ -1,37 +1,34 @@
--- init
 if not game:IsLoaded() then 
     game.Loaded:Wait()
 end
+
+if getgenv().ValiantAimHacks then return getgenv().ValiantAimHacks end
 
 if not syn or not protectgui then
     getgenv().protectgui = function() end
 end
 
-if not getgenv().SilentAim then
-	getgenv().SilentAim = {
-		Enabled = false,
-		
-		ClassName = "Universal Silent Aim - Averiias, Stefanuk12, xaxa",
-		ToggleKey = "RightAlt",
-		
-		TeamCheck = false,
-		VisibleCheck = false, 
-		TargetPart = "HumanoidRootPart",
-		SilentAimMethod = "Raycast",
-		
-		FOVRadius = 130,
-		FOVVisible = false,
-		ShowSilentAimTarget = false, 
-		
-		MouseHitPrediction = false,
-		MouseHitPredictionAmount = 0.165,
-		HitChance = 100
-	}
-end
-
+getgenv().SilentAim = {
+    Enabled = false,
+    
+    ClassName = "Universal Silent Aim - Averiias, Stefanuk12, xaxa",
+    ToggleKey = "RightAlt",
+    
+    TeamCheck = false,
+    VisibleCheck = false, 
+    TargetPart = "HumanoidRootPart",
+    SilentAimMethod = "Raycast",
+    
+    FOVRadius = 130,
+    FOVVisible = false,
+    ShowSilentAimTarget = false, 
+    
+    MouseHitPrediction = false,
+    MouseHitPredictionAmount = 0.165,
+    HitChance = 100
+}
 local SilentAimSettings = getgenv().SilentAim
 
--- variables
 local Camera = workspace.CurrentCamera
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -57,25 +54,6 @@ local create = coroutine.create
 
 local ValidTargetParts = {"Head", "HumanoidRootPart"}
 local PredictionAmount = 0.165
-
-getgenv().mouse_box = Drawing.new("Square")
-local mouse_box = getgenv().mouse_box
-mouse_box.Visible = true 
-mouse_box.ZIndex = 999 
-mouse_box.Color = Color3.fromRGB(54, 57, 241)
-mouse_box.Thickness = 20 
-mouse_box.Size = Vector2.new(20, 20)
-mouse_box.Filled = true 
-
-local fov_circle = Drawing.new("Circle")
-fov_circle.Thickness = 1
-fov_circle.NumSides = 100
-fov_circle.Radius = 180
-fov_circle.Filled = false
-fov_circle.Visible = false
-fov_circle.ZIndex = 999
-fov_circle.Transparency = 1
-fov_circle.Color = Color3.fromRGB(54, 57, 241)
 
 local ExpectedArguments = {
     FindPartOnRayWithIgnoreList = {
@@ -163,12 +141,12 @@ local function getClosestPlayer()
     local DistanceToMouse
     for _, Player in next, GetPlayers(Players) do
         if Player == LocalPlayer then continue end
-        if Toggles.TeamCheck.Value and Player.Team == LocalPlayer.Team then continue end
+        if SilentAimSettings.TeamCheck and Player.Team == LocalPlayer.Team then continue end
 
         local Character = Player.Character
         if not Character then continue end
         
-        if Toggles.VisibleCheck.Value and not IsPlayerVisible(Player) then continue end
+        if SilentAimSettings.VisibleCheck and not IsPlayerVisible(Player) then continue end
 
         local HumanoidRootPart = FindFirstChild(Character, "HumanoidRootPart")
         local Humanoid = FindFirstChild(Character, "Humanoid")
@@ -188,24 +166,12 @@ end
 
 resume(create(function()
     RenderStepped:Connect(function()
-        if Toggles.MousePosition.Value and Toggles.aim_Enabled.Value then
+        if SilentAimSettings.Enabled then
             if getClosestPlayer() then 
                 local Root = getClosestPlayer().Parent.PrimaryPart or getClosestPlayer()
                 local RootToViewportPoint, IsOnScreen = WorldToViewportPoint(Camera, Root.Position);
                 -- using PrimaryPart instead because if your Target Part is "Random" it will flicker the square between the Target's Head and HumanoidRootPart (its annoying)
-                
-                mouse_box.Visible = IsOnScreen
-                mouse_box.Position = Vector2.new(RootToViewportPoint.X, RootToViewportPoint.Y)
-            else 
-                mouse_box.Visible = false 
-                mouse_box.Position = Vector2.new()
             end
-        end
-        
-        if Toggles.Visible.Value then 
-            fov_circle.Visible = Toggles.Visible.Value
-            fov_circle.Color = Options.Color.Value
-            fov_circle.Position = getMousePosition()
         end
     end)
 end))
@@ -217,7 +183,7 @@ oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     local Arguments = {...}
     local self = Arguments[1]
     local chance = CalculateChance(SilentAimSettings.HitChance)
-    if Toggles.aim_Enabled.Value and self == workspace and not checkcaller() and chance == true then
+    if SilentAimSettings.Enabled and self == workspace and not checkcaller() and chance == true then
         if Method == "FindPartOnRayWithIgnoreList" and Options.Method.Value == Method then
             if ValidateArguments(Arguments, ExpectedArguments.FindPartOnRayWithIgnoreList) then
                 local A_Ray = Arguments[2]
@@ -275,13 +241,13 @@ end))
 
 local oldIndex = nil 
 oldIndex = hookmetamethod(game, "__index", newcclosure(function(self, Index)
-    if self == Mouse and not checkcaller() and Toggles.aim_Enabled.Value and Options.Method.Value == "Mouse.Hit/Target" and getClosestPlayer() then
+    if self == Mouse and not checkcaller() and SilentAimSettings.Enabled and Options.Method.Value == "Mouse.Hit/Target" and getClosestPlayer() then
         local HitPart = getClosestPlayer()
          
         if Index == "Target" or Index == "target" then 
             return HitPart
         elseif Index == "Hit" or Index == "hit" then 
-            return ((Toggles.Prediction.Value and (HitPart.CFrame + (HitPart.Velocity * PredictionAmount))) or (not Toggles.Prediction.Value and HitPart.CFrame))
+            return ((SilentAimSettings.MouseHitPrediction and (HitPart.CFrame + (HitPart.Velocity * PredictionAmount))) or (not SilentAimSettings.MouseHitPrediction and HitPart.CFrame))
         elseif Index == "X" or Index == "x" then 
             return self.X 
         elseif Index == "Y" or Index == "y" then 
