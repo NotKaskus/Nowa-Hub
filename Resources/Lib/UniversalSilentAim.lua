@@ -25,11 +25,11 @@ if not getgenv().SilentAim then
         VisibleCheck = false, 
         TargetPart = "HumanoidRootPart",
         SilentAimMethod = "Raycast",
-	FOVEnabled = false,
+		FOVEnabled = false,
         FOVRadius = 90,
         FOVVisible = false,
-	FOVColor = Color3.fromRGB(54, 57, 241),
-	FOVThickness = 1,
+		FOVColor = Color3.fromRGB(54, 57, 241),
+		FOVThickness = 1,
         ShowSilentAimTarget = false, 
         MouseHitPrediction = false,
         MouseHitPredictionAmount = 0.165,
@@ -74,7 +74,6 @@ fov_circle.Filled = false
 fov_circle.Visible = SilentAimSettings.FOVEnabled
 fov_circle.Transparency = 1
 fov_circle.Color = SilentAimSettings.FOVColor
--- fov_circle.Position = Vector2(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y)
 
 local ExpectedArguments = {
     FindPartOnRayWithIgnoreList = {
@@ -299,7 +298,11 @@ function SilentAimSettings.Functions:Get(type)
 end
 
 function SilentAimSettings.Functions:Set(type, value)
-    ss[type] = value
+    if type == 'FOVVisible' then
+    	fov_circle.Visible = value
+    else
+    	ss[type] = value
+    end
 end
 
 function SilentAimSettings.Functions:Destroy()
