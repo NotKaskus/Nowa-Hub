@@ -265,21 +265,11 @@ function ValidType(type)
 end
 
 function SilentAimSettings.Functions:Get(type)
-    if not ValidType(type) then
-    	print("Universal Silent Aim: bad argument to #1 'Get' (Invalid Type)")
-    else
-    	return ss[type]
-    end
+    return ss[type]
 end
 
 function SilentAimSettings.Functions:Set(type, value)
-    if not ValidType(type) then
-	print("Universal Silent Aim: bad argument to #1 'Set' (Invalid Type)")
-    else if value ~= nil
-	print("Universal Silent Aim: bad argument to #2 'Set'")
-    else
-	ss[type] = value		
-    end
+    ss[type] = value
 end
 
 function SilentAimSettings.Functions:Destroy()
