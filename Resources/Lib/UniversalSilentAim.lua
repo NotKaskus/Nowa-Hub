@@ -64,7 +64,9 @@ local create = coroutine.create
 local ValidTargetParts = {"Head", "HumanoidRootPart"}
 local PredictionAmount = 0.165
 
-local fov_circle = Drawing.new("Circle")
+getgenv().FOV_CIRCLE = Drawing.new("Circle")
+
+local fov_circle = getgenv().FOV_CIRCLE
 fov_circle.Thickness = SilentAimSettings.Thickness
 fov_circle.NumSides = 60
 fov_circle.Radius = SilentAimSettings.FOVRadius
@@ -297,17 +299,7 @@ function SilentAimSettings.Functions:Get(type)
 end
 
 function SilentAimSettings.Functions:Set(type, value)
-    if type == 'FOVEnabled' then
-    	fov_circle.Visible = value
-    else if type == 'FOVRadius'
-	fov_circle.Radius = value
-    else if type == 'FOVColor'
-	fov_circle.Color = value
-    else if type == 'FOVThickness'
-	fov_circle.Thickness = value
-    else
-    	ss[type] = value
-    end
+    ss[type] = value
 end
 
 function SilentAimSettings.Functions:Destroy()
