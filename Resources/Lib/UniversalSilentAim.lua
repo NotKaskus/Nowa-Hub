@@ -291,3 +291,5 @@ function Library:Destroy()
     }
     -- I dont know how to destroy the whole thing so just disabling it lol
 end
+
+return Library
