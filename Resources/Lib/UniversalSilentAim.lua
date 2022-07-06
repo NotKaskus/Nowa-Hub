@@ -176,7 +176,7 @@ local function getClosestPlayer()
         if not OnScreen then continue end
 
         local Distance = (getMousePosition() - ScreenPosition).Magnitude
-        if Distance <= (DistanceToMouse or SilentAimSettings.FOVRadius or 2000) then
+        if Distance <= (DistanceToMouse or getgenv().FOV_CIRCLE.Radius or 2000) then
             Closest = ((SilentAimSettings.TargetPart == "Random" and Character[ValidTargetParts[math.random(1, #ValidTargetParts)]]) or Character[SilentAimSettings.TargetPart])
             DistanceToMouse = Distance
         end
@@ -194,9 +194,9 @@ resume(create(function()
             end
         end
 					
-	if SilentAimSettings.FOVEnabled then 
-            fov_circle.Visible = SilentAimSettings.FOVEnabled
-            fov_circle.Color = SilentAimSettings.FOVColor
+	if getgenv().FOV_CIRCLE.Visible then 
+            fov_circle.Visible = getgenv().FOV_CIRCLE.Visible
+            fov_circle.Color = getgenv().FOV_CIRCLE.Color
             fov_circle.Position = getMousePosition()
         end
     end)
