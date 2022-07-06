@@ -72,7 +72,7 @@ fov_circle.Filled = false
 fov_circle.Visible = SilentAimSettings.FOVEnabled
 fov_circle.Transparency = 1
 fov_circle.Color = SilentAimSettings.FOVColor
-fov_circle.Position = Vector2(GetMouseLocation().X, GetMouseLocation().Y)
+fov_circle.Position = Vector2(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y)
 
 local ExpectedArguments = {
     FindPartOnRayWithIgnoreList = {
