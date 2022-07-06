@@ -258,7 +258,7 @@ oldIndex = hookmetamethod(game, "__index", newcclosure(function(self, Index)
 end))
 
 local ss = getgenv().SilentAim
-local Library
+local Library = {}
 
 function ValidType(type)
 	return ss[type] ~= nil
