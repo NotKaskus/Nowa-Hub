@@ -71,6 +71,65 @@ Toggles.AIMBOT_TEAM_CHECK:OnChanged(function()
 end)
 
 
+AimbotGroupBox:AddDivider()
+
+
+-- [[ Toggle Fov ]]
+AimbotGroupBox:AddToggle('AIMBOT_FOV_TOGGLE', {
+	Text = 'Fov',
+	Default = false,
+	Tooltip = 'Only target players within the circle radius.'
+})
+
+Toggles.AIMBOT_FOV_TOGGLE:OnChanged(function()
+	AimbotEnv.FOVSettings.Enabled = Toggles.AIMBOT_FOV_TOGGLE.Value
+end)
+
+
+-- [[ Increase FOV Scale ]]
+AimbotGroupBox:AddSlider('AIMBOT_FOV_SCALE', {
+	Text = 'FOV Scale',
+	Default = 90,
+	Min = 50,
+	Max = 500,
+	Rounding = 0,
+	Compact = false
+})
+
+Options.AIMBOT_FOV_SCALE:OnChanged(function()
+    AimbotEnv.FOVSettings.Amount = Options.AIMBOT_FOV_SCALE.Value
+end)
+
+
+-- [[ Increase FOV Thickness ]]
+AimbotGroupBox:AddSlider('AIMBOT_FOV_THICKNESS', {
+	Text = 'FOV Thickness',
+	Default = 1,
+	Min = 0,
+	Max = 10,
+	Rounding = 0,
+	Compact = false
+})
+
+Options.AIMBOT_FOV_THICKNESS:OnChanged(function()
+    AimbotEnv.FOVSettings.Thickness = Options.AIMBOT_FOV_THICKNESS.Value
+end)
+
+local function RGBToString(RGB)
+    return tostring(math.floor(RGB.R * 255))..", "..tostring(math.floor(RGB.G * 255))..", "..tostring(math.floor(RGB.B * 255))
+end
+
+-- [[ Customize FOV Color ]]
+AimbotGroupBox:AddLabel('FOV Color'):AddColorPicker('AIMBOT_FOV_COLOR', {
+    Default = Color3.fromRGB(255,255,255),
+    Title = 'FOV Color',
+})
+
+Options.AIMBOT_FOV_COLOR:OnChanged(function()
+	AimbotEnv.FOVSettings.Color = RGBToString(Options.AIMBOT_FOV_COLOR.Value)
+end)
+
+
 
 -- // Combat Aimbot Left Group Box
 local SilentAimGroupBox = Tabs.Combat:AddRightGroupbox('Silent Aim')
@@ -166,6 +225,58 @@ Options.SILENT_AIM_HIT_PREDICTION_CHANCE:OnChanged(function()
     SilentAimEnv.Functions:Set('MouseHitPredictionAmount', Options.SILENT_AIM_HIT_PREDICTION_CHANCE.Value)
 end)
 
+
+-- SilentAimGroupBox:AddDivider()
+
+
+-- SilentAimGroupBox:AddToggle('SILENT_AIM_FOV_TOGGLE', {
+--     Text = 'Toggle FOV',
+--     Default = false,
+--     Tooltip = 'Enable FOV for silent aim module.',
+-- })
+
+-- Toggles.SILENT_AIM_FOV_TOGGLE:OnChanged(function()
+-- 	SilentAimEnv.Functions:Set('FOVEnabled', Toggles.SILENT_AIM_FOV_TOGGLE.Value)
+-- end)
+
+
+-- SilentAimGroupBox:AddSlider('SILENT_AIM_FOV_SCALE', {
+--     Text = 'Hit Chance',
+--     Default = 90,
+--     Min = 0,
+--     Max = 500,
+--     Rounding = 0,
+--     Compact = false,
+-- })
+
+-- Options.SILENT_AIM_FOV_SCALE:OnChanged(function()
+--     SilentAimEnv.Functions:Set('FOVRadius', Options.SILENT_AIM_FOV_SCALE.Value)
+-- end)
+
+
+-- SilentAimGroupBox:AddSlider('SILENT_AIM_FOV_THICKNESS', {
+--     Text = 'FOV Thickness',
+--     Default = 1,
+--     Min = 0,
+--     Max = 10,
+--     Rounding = 0,
+--     Compact = false,
+-- })
+
+-- Options.SILENT_AIM_FOV_THICKNESS:OnChanged(function()
+--     SilentAimEnv.Functions:Set('FOVThickness', Options.SILENT_AIM_FOV_THICKNESS.Value)
+-- end)
+
+
+-- -- [[ Customize ESP Color ]]
+-- SilentAimGroupBox:AddLabel('FOV Color'):AddColorPicker('SILENT_AIM_FOV_COLOR', {
+--     Default = Color3.fromRGB(54, 57, 241),
+--     Title = 'FOV Color',
+-- })
+
+-- Options.SILENT_AIM_FOV_COLOR:OnChanged(function()
+-- 	SilentAimEnv.Functions:Set('FOVColor', Options.SILENT_AIM_FOV_COLOR.Value)
+-- end)
 
 -- // Visual Left Group Box
 local VisualGroupBox = Tabs.Visual:AddLeftGroupbox('Wall Hack')
@@ -297,66 +408,6 @@ Options.ESP_COLOR:OnChanged(function()
     EspEnv:Set('LookTracers', 'Color', ESP_COLOR)
     EspEnv:Set('Names', 'Color', ESP_COLOR)
     EspEnv:Set('HeadDots', 'Color', ESP_COLOR)
-end)
-
-
-VisualGroupBox:AddDivider()
-
-
-
--- [[ Toggle Fov ]]
-VisualGroupBox:AddToggle('FOV_TOGGLE', {
-	Text = 'Fov',
-	Default = false,
-	Tooltip = 'Only target players within the circle radius.'
-})
-
-Toggles.FOV_TOGGLE:OnChanged(function()
-	AimbotEnv.FOVSettings.Enabled = Toggles.FOV_TOGGLE.Value
-end)
-
-
--- [[ Increase FOV Scale ]]
-VisualGroupBox:AddSlider('FOV_SCALE', {
-	Text = 'FOV Scale',
-	Default = 90,
-	Min = 50,
-	Max = 500,
-	Rounding = 0,
-	Compact = false
-})
-
-Options.FOV_SCALE:OnChanged(function()
-    AimbotEnv.FOVSettings.Amount = Options.FOV_SCALE.Value
-end)
-
-
--- [[ Increase FOV Thickness ]]
-VisualGroupBox:AddSlider('FOV_THICKNESS', {
-	Text = 'FOV Thickness',
-	Default = 1,
-	Min = 0,
-	Max = 10,
-	Rounding = 0,
-	Compact = false
-})
-
-Options.FOV_THICKNESS:OnChanged(function()
-    AimbotEnv.FOVSettings.Thickness = Options.FOV_THICKNESS.Value
-end)
-
-local function RGBToString(RGB)
-    return tostring(math.floor(RGB.R * 255))..", "..tostring(math.floor(RGB.G * 255))..", "..tostring(math.floor(RGB.B * 255))
-end
-
--- [[ Customize FOV Color ]]
-VisualGroupBox:AddLabel('FOV Color'):AddColorPicker('FOV_COLOR', {
-    Default = Color3.fromRGB(255,255,255),
-    Title = 'FOV Color',
-})
-
-Options.FOV_COLOR:OnChanged(function()
-	AimbotEnv.FOVSettings.Color = RGBToString(Options.FOV_COLOR.Value)
 end)
 
 
