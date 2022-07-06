@@ -193,8 +193,8 @@ resume(create(function()
             end
         end
 					
-	if SilentAimSettings.FOVVisible then 
-            fov_circle.Visible = SilentAimSettings.FOVVisible
+	if SilentAimSettings.FOVEnabled then 
+            fov_circle.Visible = SilentAimSettings.FOVEnabled
             fov_circle.Color = SilentAimSettings.FOVColor
             fov_circle.Position = getMousePosition()
         end
