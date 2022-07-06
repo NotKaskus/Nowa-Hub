@@ -4,8 +4,8 @@ end
 
 --// Cache
 
-local select = select
-local pcall, getgenv, next, continue, Vector2 = select(1, pcall, getgenv, next, continue, Vector2.new)
+-- local select = select
+-- local pcall, getgenv, next, continue, Vector2 = select(1, pcall, getgenv, next, continue, Vector2.new)
 
 --// Preventing Multiple Processes
 
