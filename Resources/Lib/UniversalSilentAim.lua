@@ -52,6 +52,16 @@ local create = coroutine.create
 local ValidTargetParts = {"Head", "HumanoidRootPart"}
 local PredictionAmount = 0.165
 
+local fov_circle = Drawing.new("Circle")
+fov_circle.Thickness = 1
+fov_circle.NumSides = 100
+fov_circle.Radius = 180
+fov_circle.Filled = false
+fov_circle.Visible = false
+fov_circle.ZIndex = 999
+fov_circle.Transparency = 1
+fov_circle.Color = Color3.fromRGB(54, 57, 241)
+
 local ExpectedArguments = {
     FindPartOnRayWithIgnoreList = {
         ArgCountRequired = 3,
@@ -170,6 +180,12 @@ resume(create(function()
                 -- using PrimaryPart instead because if your Target Part is "Random" it will flicker the square between the Target's Head and HumanoidRootPart (its annoying)
             end
         end
+					
+	if SilentAimSettings.FOVVisible then 
+            fov_circle.Visible = SilentAimSettings.FOVVisible
+            fov_circle.Color = Color3.fromRGB(54, 57, 241)
+            fov_circle.Position = getMousePosition()
+        end
     end)
 end))
 
@@ -269,7 +285,11 @@ function SilentAimSettings.Functions:Get(type)
 end
 
 function SilentAimSettings.Functions:Set(type, value)
-    ss[type] = value
+    if type == 'FOVVisible' then
+    	fov_circle.Visible = value
+    else
+    	ss[type] = value
+    end
 end
 
 function SilentAimSettings.Functions:Destroy()
