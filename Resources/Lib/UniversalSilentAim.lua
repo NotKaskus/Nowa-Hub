@@ -299,12 +299,12 @@ end
 function SilentAimSettings.Functions:Set(type, value)
     if type == 'FOVEnabled' then
     	fov_circle.Visible = value
-	else if type == 'FOVRadius'
-		fov_circle.Radius = value
-	else if type == 'FOVColor'
-		fov_circle.Color = value
-	else if type == 'FOVThickness'
-		fov_circle.Thickness = value
+    else if type == 'FOVRadius'
+	fov_circle.Radius = value
+    else if type == 'FOVColor'
+	fov_circle.Color = value
+    else if type == 'FOVThickness'
+	fov_circle.Thickness = value
     else
     	ss[type] = value
     end
