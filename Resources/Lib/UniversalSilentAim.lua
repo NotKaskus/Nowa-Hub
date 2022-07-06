@@ -2,7 +2,16 @@ if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 
-if getgenv().ValiantAimHacks then return getgenv().ValiantAimHacks end
+--// Cache
+
+local select = select
+local pcall, getgenv, next, continue, Vector2 = select(1, pcall, getgenv, next, continue, Vector2.new)
+
+--// Preventing Multiple Processes
+
+pcall(function()
+    getgenv().SilentAim.Functions:Destroy()
+end)
 
 if not syn or not protectgui then
     getgenv().protectgui = function() end
@@ -16,9 +25,11 @@ if not getgenv().SilentAim then
         VisibleCheck = false, 
         TargetPart = "HumanoidRootPart",
         SilentAimMethod = "Raycast",
+	FOVEnabled = false,
         FOVRadius = 90,
         FOVVisible = false,
 	FOVColor = Color3.fromRGB(54, 57, 241),
+	FOVThickness = 1,
         ShowSilentAimTarget = false, 
         MouseHitPrediction = false,
         MouseHitPredictionAmount = 0.165,
@@ -54,14 +65,14 @@ local ValidTargetParts = {"Head", "HumanoidRootPart"}
 local PredictionAmount = 0.165
 
 local fov_circle = Drawing.new("Circle")
-fov_circle.Thickness = 1
-fov_circle.NumSides = 100
-fov_circle.Radius = 180
+fov_circle.Thickness = SilentAimSettings.Thickness
+fov_circle.NumSides = 60
+fov_circle.Radius = SilentAimSettings.FOVRadius
 fov_circle.Filled = false
-fov_circle.Visible = false
-fov_circle.ZIndex = 999
+fov_circle.Visible = SilentAimSettings.FOVEnabled
 fov_circle.Transparency = 1
-fov_circle.Color = Color3.fromRGB(54, 57, 241)
+fov_circle.Color = SilentAimSettings.FOVColor
+fov_circle.Position = Vector2(GetMouseLocation().X, GetMouseLocation().Y)
 
 local ExpectedArguments = {
     FindPartOnRayWithIgnoreList = {
@@ -294,19 +305,7 @@ function SilentAimSettings.Functions:Set(type, value)
 end
 
 function SilentAimSettings.Functions:Destroy()
-    getgenv().SilentAim = {
-        Enabled = false,
-        ToggleKey = "RightAlt",
-        TeamCheck = false,
-        VisibleCheck = false, 
-        TargetPart = "HumanoidRootPart",
-        SilentAimMethod = "Raycast",
-        FOVRadius = 90,
-        FOVVisible = false,
-        ShowSilentAimTarget = false, 
-        MouseHitPrediction = false,
-        MouseHitPredictionAmount = 0.165,
-        HitChance = 100,
-    }
-    -- I dont know how to destroy the whole thing so just disabling it lol
+    getgenv().SilentAim = nil
+    fov_circle:Remove()
+    -- I dont know how to destroy the whole thing so i just set it to nul
 end
