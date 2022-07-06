@@ -8,25 +8,22 @@ if not syn or not protectgui then
     getgenv().protectgui = function() end
 end
 
-getgenv().SilentAim = {
-    Enabled = false,
-    
-    ClassName = "Universal Silent Aim - Averiias, Stefanuk12, xaxa",
-    ToggleKey = "RightAlt",
-    
-    TeamCheck = false,
-    VisibleCheck = false, 
-    TargetPart = "HumanoidRootPart",
-    SilentAimMethod = "Raycast",
-    
-    FOVRadius = 90,
-    FOVVisible = false,
-    ShowSilentAimTarget = false, 
-    
-    MouseHitPrediction = false,
-    MouseHitPredictionAmount = 0.165,
-    HitChance = 100,
-}
+if not getgenv().SilentAim then
+    getgenv().SilentAim = {
+        Enabled = false,
+        ToggleKey = "RightAlt",
+        TeamCheck = false,
+        VisibleCheck = false, 
+        TargetPart = "HumanoidRootPart",
+        SilentAimMethod = "Raycast",
+        FOVRadius = 90,
+        FOVVisible = false,
+        ShowSilentAimTarget = false, 
+        MouseHitPrediction = false,
+        MouseHitPredictionAmount = 0.165,
+        HitChance = 100,
+    }
+end
 local SilentAimSettings = getgenv().SilentAim
 
 local Camera = workspace.CurrentCamera
@@ -259,3 +256,38 @@ oldIndex = hookmetamethod(game, "__index", newcclosure(function(self, Index)
 
     return oldIndex(self, Index)
 end))
+
+local ss = getgenv().SilentAim
+local Library
+
+function ValidType(type)
+	return ss[type] ~= nil
+end
+
+function Library:Get(type)
+    assert(ValidType(type),"Universal Silent Aim: bad argument to #1 'Get' (Invalid Type)")
+end
+
+function Library:Set(type, value)
+    assert(ValidType(type),"Universal Silent Aim: bad argument to #1 'Set' (Invalid Type)")
+    assert(value ~= nil,"Universal Silent Aim: bad argument to #2 'Set'")
+    ss[type] = value
+end
+
+function Library:Destroy()
+    getgenv().SilentAim = {
+        Enabled = false,
+        ToggleKey = "RightAlt",
+        TeamCheck = false,
+        VisibleCheck = false, 
+        TargetPart = "HumanoidRootPart",
+        SilentAimMethod = "Raycast",
+        FOVRadius = 90,
+        FOVVisible = false,
+        ShowSilentAimTarget = false, 
+        MouseHitPrediction = false,
+        MouseHitPredictionAmount = 0.165,
+        HitChance = 100,
+    }
+    -- I dont know how to destroy the whole thing so just disabling it lol
+end
