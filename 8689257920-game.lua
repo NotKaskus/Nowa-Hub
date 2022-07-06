@@ -1,17 +1,18 @@
 local wallyRepo = 'https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/'
-local zxunysRepo = 'https://raw.githubusercontent.com/Exunys/Aimbot-V2/main/Resources/Scripts/'
-local zzerexxRepo = 'https://raw.githubusercontent.com/NotKaskus/Nowa-Hub/main/Resources/Lib/'
+local zxunysRepo = 'https://raw.githubusercontent.com/Exunys/Aimbot-V2/main/'
+local nowaRepo = 'https://raw.githubusercontent.com/NotKaskus/Nowa-Hub/main/'
 
 -- // Library
 local Library = loadstring(game:HttpGet(wallyRepo .. 'Library.lua'))()
-local ThemeManager = loadstring(game:HttpGet(wallyRepo .. 'addons/ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(wallyRepo .. 'addons/SaveManager.lua'))()
-loadstring(game:HttpGet(zzerexxRepo .. 'UniversalEsp.lua'))()
-loadstring(game:HttpGet(zxunysRepo .. 'Raw%20Main.lua'))()
+loadstring(game:HttpGet(nowaRepo .. 'Resources/Lib/UniversalSilentAim.lua'))()
+loadstring(game:HttpGet(nowaRepo .. 'Resources/Lib/UniversalEsp.lua'))()
+loadstring(game:HttpGet(zxunysRepo .. 'Resources/Scripts/Raw%20Main.lua'))()
 
 -- // Environments
 local AimbotEnv = getgenv().Aimbot
 local EspEnv = getgenv().UESP
+local SilentAimEnv = getgenv().SilentAim
 
 -- // Main Window
 local Window = Library:CreateWindow({
@@ -70,12 +71,110 @@ Toggles.AIMBOT_TEAM_CHECK:OnChanged(function()
 end)
 
 
+
+-- // Combat Aimbot Left Group Box
+local SilentAimGroupBox = Tabs.Combat:AddRightGroupbox('Silent Aim')
+
+-- [[ Silent Aim Toggle ]]
+SilentAimGroupBox:AddToggle('SILENT_AIM_TOGGLE', {
+    Text = 'Toggle Silent Aim',
+    Default = false,
+    Tooltip = 'Aim only at enemy.',
+})
+
+Toggles.SILENT_AIM_TOGGLE:OnChanged(function()
+	SilentAimEnv.Functions:Set('Enabled', Toggles.SILENT_AIM_TOGGLE.Value)
+end)
+
+
+-- [[ Team Cheker ]]
+SilentAimGroupBox:AddToggle('SILENT_AIM_TEAM_CHECK', {
+    Text = 'Team Check',
+    Default = false,
+    Tooltip = 'Aim only at enemy.',
+})
+
+Toggles.SILENT_AIM_TEAM_CHECK:OnChanged(function()
+	SilentAimEnv.Functions:Set('TeamCheck', Toggles.SILENT_AIM_TEAM_CHECK.Value)
+end)
+
+
+SilentAimGroupBox:AddDropdown('SILENT_AIM_TARGET_PART', {
+    Values = {"Head", "HumanoidRootPart", "Random"},
+    Default = 1,
+    Multi = false,
+    Text = 'Target Part',
+    Tooltip = 'The part of the body that will be used by silent aim.',
+})
+
+Options.SILENT_AIM_TARGET_PART:OnChanged(function()
+    SilentAimEnv.Functions:Set('TargetPart', Options.SILENT_AIM_TARGET_PART.Value)
+end)
+
+
+SilentAimGroupBox:AddDropdown('SILENT_AIM_METHOD', {
+    Values = {'Raycast', 'FindPartOnRay', 'FindPartOnRayWithWhitelist', 'FindPartOnRayWithIgnoreList', 'Mouse.Hit/Target'},
+    Default = 1,
+    Multi = false,
+    Text = 'Silent Aim Method',
+    Tooltip = 'The method to use by the silent aim module.',
+})
+
+Options.SILENT_AIM_METHOD:OnChanged(function()
+    SilentAimEnv.Functions:Set('SilentAimMethod', Options.SILENT_AIM_METHOD.Value)
+end)
+
+
+SilentAimGroupBox:AddSlider('SILENT_AIM_HIT_CHANCE', {
+    Text = 'Hit Chance',
+    Default = 100,
+    Min = 0,
+    Max = 100,
+    Rounding = 0,
+    Compact = false, -- If set to true, then it will hide the label
+})
+
+Options.SILENT_AIM_HIT_CHANCE:OnChanged(function()
+    SilentAimEnv.Functions:Set('HitChance', Options.SILENT_AIM_HIT_CHANCE.Value)
+end)
+
+
+SilentAimGroupBox:AddDivider()
+
+
+SilentAimGroupBox:AddToggle('SILENT_AIM_HIT_PREDICTION_TOGGLE', {
+    Text = 'Mouse.Hit/Target Prediction',
+    Default = false,
+    Tooltip = 'Enable Target prediction for "Mouse.Hit/Target" method.',
+})
+
+Toggles.SILENT_AIM_HIT_PREDICTION_TOGGLE:OnChanged(function()
+	SilentAimEnv.Functions:Set('MouseHitPrediction', Toggles.SILENT_AIM_HIT_PREDICTION_TOGGLE.Value)
+end)
+
+
+SilentAimGroupBox:AddSlider('SILENT_AIM_HIT_PREDICTION_CHANCE', {
+    Text = 'Hit Chance',
+    Default = 0.165,
+    Min = 0,
+    Max = 10,
+    Rounding = 3,
+    Compact = false, -- If set to true, then it will hide the label
+})
+
+Options.SILENT_AIM_HIT_PREDICTION_CHANCE:OnChanged(function()
+    SilentAimEnv.Functions:Set('MouseHitPredictionAmount', Options.SILENT_AIM_HIT_PREDICTION_CHANCE.Value)
+end)
+
+
 -- // Visual Left Group Box
 local VisualGroupBox = Tabs.Visual:AddLeftGroupbox('Wall Hack')
 
 EspEnv:Set('Tracers', 'Enabled', false)
 EspEnv:Set('Names', 'ShowDistance', true)
 
+
+-- [[ Team Cheker ]]
 VisualGroupBox:AddToggle('ESP_TEAM_CHECK', {
 	Text = 'Team Check',
 	Default = false,
@@ -83,10 +182,11 @@ VisualGroupBox:AddToggle('ESP_TEAM_CHECK', {
 })
 
 Toggles.ESP_TEAM_CHECK:OnChanged(function()
-	EspEnv.TeamCheck = Toggles.ESP_TEAM_CHECK.Value
+	EspEnv:Set('Other', 'TeamCheck', Toggles.ESP_TEAM_CHECK.Value)
 end)
 
 
+-- [[ ESP Increase max distance ]]
 VisualGroupBox:AddSlider('ESP_MAX_DISTANCE', {
 	Text = 'Max Distance',
 	Default = 500,
@@ -97,13 +197,14 @@ VisualGroupBox:AddSlider('ESP_MAX_DISTANCE', {
 })
 
 Options.ESP_MAX_DISTANCE:OnChanged(function()
-    EspEnv.MaximumDistance = Options.ESP_MAX_DISTANCE.Value
+	EspEnv:Set('Other', 'MaximumDistance', Options.ESP_MAX_DISTANCE.Value)
 end)
 
 
 VisualGroupBox:AddDivider()
 
 
+-- [[ ESP Boxes ]]
 VisualGroupBox:AddToggle('ESP_BOXES', {
 	Text = 'Boxes',
 	Default = false,
@@ -115,6 +216,7 @@ Toggles.ESP_BOXES:OnChanged(function()
 end)
 
 
+-- [[ ESP Skeletons ]]
 VisualGroupBox:AddToggle('ESP_SKELETONS', {
 	Text = 'Show Skeletons',
 	Default = false,
@@ -127,6 +229,7 @@ Toggles.ESP_SKELETONS:OnChanged(function()
 end)
 
 
+-- [[ ESP Look Tracers ]]
 VisualGroupBox:AddToggle('ESP_LOOK_TRACERS', {
 	Text = 'Look Tracers',
 	Default = false,
@@ -138,6 +241,7 @@ Toggles.ESP_LOOK_TRACERS:OnChanged(function()
 end)
 
 
+-- [[ ESP Names ]]
 VisualGroupBox:AddToggle('ESP_NAMES', {
 	Text = 'Show Name',
 	Default = false,
@@ -149,6 +253,7 @@ Toggles.ESP_NAMES:OnChanged(function()
 end)
 
 
+-- [[ ESP Health Bars ]]
 VisualGroupBox:AddToggle('ESP_HEALTH_BARS', {
 	Text = 'Health Bars',
 	Default = false,
@@ -160,6 +265,7 @@ Toggles.ESP_HEALTH_BARS:OnChanged(function()
 end)
 
 
+-- [[ ESP Rainbow toggle ]]
 VisualGroupBox:AddToggle('ESP_RAINBOW_TOGGLE', {
 	Text = 'Toggle Rainbow ESP',
 	Default = false,
@@ -177,6 +283,7 @@ Toggles.ESP_RAINBOW_TOGGLE:OnChanged(function()
 end)
 
 
+-- [[ Customize ESP Color ]]
 VisualGroupBox:AddLabel('ESP Color'):AddColorPicker('ESP_COLOR', {
     Default = Color3.fromRGB(255,255,255),
     Title = 'ESP Color',
@@ -193,10 +300,12 @@ Options.ESP_COLOR:OnChanged(function()
 end)
 
 
+VisualGroupBox:AddDivider()
 
-local FovGroupBox = Tabs.Visual:AddLeftGroupbox('Fov')
 
-FovGroupBox:AddToggle('FOV_TOGGLE', {
+
+-- [[ Toggle Fov ]]
+VisualGroupBox:AddToggle('FOV_TOGGLE', {
 	Text = 'Fov',
 	Default = false,
 	Tooltip = 'Only target players within the circle radius.'
@@ -207,7 +316,8 @@ Toggles.FOV_TOGGLE:OnChanged(function()
 end)
 
 
-FovGroupBox:AddSlider('FOV_SCALE', {
+-- [[ Increase FOV Scale ]]
+VisualGroupBox:AddSlider('FOV_SCALE', {
 	Text = 'FOV Scale',
 	Default = 90,
 	Min = 50,
@@ -220,7 +330,9 @@ Options.FOV_SCALE:OnChanged(function()
     AimbotEnv.FOVSettings.Amount = Options.FOV_SCALE.Value
 end)
 
-FovGroupBox:AddSlider('FOV_THICKNESS', {
+
+-- [[ Increase FOV Thickness ]]
+VisualGroupBox:AddSlider('FOV_THICKNESS', {
 	Text = 'FOV Thickness',
 	Default = 1,
 	Min = 0,
@@ -237,7 +349,8 @@ local function RGBToString(RGB)
     return tostring(math.floor(RGB.R * 255))..", "..tostring(math.floor(RGB.G * 255))..", "..tostring(math.floor(RGB.B * 255))
 end
 
-FovGroupBox:AddLabel('FOV Color'):AddColorPicker('FOV_COLOR', {
+-- [[ Customize FOV Color ]]
+VisualGroupBox:AddLabel('FOV Color'):AddColorPicker('FOV_COLOR', {
     Default = Color3.fromRGB(255,255,255),
     Title = 'FOV Color',
 })
@@ -247,8 +360,10 @@ Options.FOV_COLOR:OnChanged(function()
 end)
 
 
+
 local TracerGroupBox = Tabs.Visual:AddRightGroupbox('Tracers')
 
+-- [[ TRACER Toggle ]]
 TracerGroupBox:AddToggle('TRACER_TOGGLE', {
 	Text = 'Toggle Tracers',
 	Default = false,
@@ -260,6 +375,7 @@ Toggles.TRACER_TOGGLE:OnChanged(function()
 end)
 
 
+-- [[ Customize Tracer Posittion ]]
 TracerGroupBox:AddDropdown('TRACER_ORIGIN', {
     Values = { 'Top', 'Center', 'Bottom', 'Mouse' },
     Default = 3,
@@ -273,6 +389,7 @@ Options.TRACER_ORIGIN:OnChanged(function()
 end)
 
 
+-- [[ Customize Tracer Color ]]
 TracerGroupBox:AddLabel('Tracer Color'):AddColorPicker('TRACER_COLOR', {
     Default = Color3.fromRGB(255,255,255),
     Title = 'ESP Color',
@@ -284,6 +401,7 @@ Options.TRACER_COLOR:OnChanged(function()
 end)
 
 
+-- [[ Toggle Rainbow Tracer ]]
 TracerGroupBox:AddToggle('TRACER_RAINBOW_TOGGLE', {
 	Text = 'Toggle Rainbow Tracers',
 	Default = false,
@@ -312,7 +430,5 @@ SettingsGroupBox:AddLabel('Menu Keybind'):AddKeyPicker('MenuKeybind', {
 
 -- Hand the library over to our managers
 SaveManager:SetLibrary(Library)
--- Ignore keys that are used by ThemeManager. 
-SaveManager:SetFolder('MyScriptHub/Baseplate')
--- Builds our config menu on the right side of our tab
+SaveManager:SetFolder('Nowa-Hub/Games/' .. game.PlaceId)
 SaveManager:BuildConfigSection(Tabs['Settings']) 
