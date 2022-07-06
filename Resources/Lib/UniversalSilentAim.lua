@@ -258,23 +258,23 @@ oldIndex = hookmetamethod(game, "__index", newcclosure(function(self, Index)
 end))
 
 local ss = getgenv().SilentAim
-local Library = {}
+SilentAimSettings.Functions = {}
 
 function ValidType(type)
 	return ss[type] ~= nil
 end
 
-function Library:Get(type)
+function SilentAimSettings.Functions:Get(type)
     assert(ValidType(type),"Universal Silent Aim: bad argument to #1 'Get' (Invalid Type)")
 end
 
-function Library:Set(type, value)
+function SilentAimSettings.Functions:Set(type, value)
     assert(ValidType(type),"Universal Silent Aim: bad argument to #1 'Set' (Invalid Type)")
     assert(value ~= nil,"Universal Silent Aim: bad argument to #2 'Set'")
     ss[type] = value
 end
 
-function Library:Destroy()
+function SilentAimSettings.Functions:Destroy()
     getgenv().SilentAim = {
         Enabled = false,
         ToggleKey = "RightAlt",
@@ -291,5 +291,3 @@ function Library:Destroy()
     }
     -- I dont know how to destroy the whole thing so just disabling it lol
 end
-
-return Library
