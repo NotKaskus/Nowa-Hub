@@ -18,6 +18,7 @@ if not getgenv().SilentAim then
         SilentAimMethod = "Raycast",
         FOVRadius = 90,
         FOVVisible = false,
+	FOVColor = Color3.fromRGB(54, 57, 241),
         ShowSilentAimTarget = false, 
         MouseHitPrediction = false,
         MouseHitPredictionAmount = 0.165,
@@ -183,7 +184,7 @@ resume(create(function()
 					
 	if SilentAimSettings.FOVVisible then 
             fov_circle.Visible = SilentAimSettings.FOVVisible
-            fov_circle.Color = Color3.fromRGB(54, 57, 241)
+            fov_circle.Color = SilentAimSettings.FOVColor
             fov_circle.Position = getMousePosition()
         end
     end)
