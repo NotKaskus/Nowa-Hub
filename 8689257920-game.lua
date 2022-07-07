@@ -13,6 +13,7 @@ loadstring(game:HttpGet(zxunysRepo .. 'Resources/Scripts/Raw%20Main.lua'))()
 local AimbotEnv = getgenv().Aimbot
 local EspEnv = getgenv().UESP
 local SilentAimEnv = getgenv().SilentAim
+local FovEnv = getgenv().FOV_CIRCLE
 
 -- // Main Window
 local Window = Library:CreateWindow({
@@ -226,57 +227,57 @@ Options.SILENT_AIM_HIT_PREDICTION_CHANCE:OnChanged(function()
 end)
 
 
--- SilentAimGroupBox:AddDivider()
+SilentAimGroupBox:AddDivider()
 
 
--- SilentAimGroupBox:AddToggle('SILENT_AIM_FOV_TOGGLE', {
---     Text = 'Toggle FOV',
---     Default = false,
---     Tooltip = 'Enable FOV for silent aim module.',
--- })
+SilentAimGroupBox:AddToggle('SILENT_AIM_FOV_TOGGLE', {
+    Text = 'Toggle FOV',
+    Default = false,
+    Tooltip = 'Enable FOV for silent aim module.',
+})
 
--- Toggles.SILENT_AIM_FOV_TOGGLE:OnChanged(function()
--- 	SilentAimEnv.Functions:Set('FOVEnabled', Toggles.SILENT_AIM_FOV_TOGGLE.Value)
--- end)
-
-
--- SilentAimGroupBox:AddSlider('SILENT_AIM_FOV_SCALE', {
---     Text = 'Hit Chance',
---     Default = 90,
---     Min = 0,
---     Max = 500,
---     Rounding = 0,
---     Compact = false,
--- })
-
--- Options.SILENT_AIM_FOV_SCALE:OnChanged(function()
---     SilentAimEnv.Functions:Set('FOVRadius', Options.SILENT_AIM_FOV_SCALE.Value)
--- end)
+Toggles.SILENT_AIM_FOV_TOGGLE:OnChanged(function()
+	FovEnv.Visible = Toggles.SILENT_AIM_FOV_TOGGLE.Value
+end)
 
 
--- SilentAimGroupBox:AddSlider('SILENT_AIM_FOV_THICKNESS', {
---     Text = 'FOV Thickness',
---     Default = 1,
---     Min = 0,
---     Max = 10,
---     Rounding = 0,
---     Compact = false,
--- })
+SilentAimGroupBox:AddSlider('SILENT_AIM_FOV_SCALE', {
+    Text = 'FOV Scale',
+    Default = 90,
+    Min = 0,
+    Max = 500,
+    Rounding = 0,
+    Compact = false,
+})
 
--- Options.SILENT_AIM_FOV_THICKNESS:OnChanged(function()
---     SilentAimEnv.Functions:Set('FOVThickness', Options.SILENT_AIM_FOV_THICKNESS.Value)
--- end)
+Options.SILENT_AIM_FOV_SCALE:OnChanged(function()
+	FovEnv.Radius = Options.SILENT_AIM_FOV_SCALE.Value
+end)
 
 
--- -- [[ Customize ESP Color ]]
--- SilentAimGroupBox:AddLabel('FOV Color'):AddColorPicker('SILENT_AIM_FOV_COLOR', {
---     Default = Color3.fromRGB(54, 57, 241),
---     Title = 'FOV Color',
--- })
+SilentAimGroupBox:AddSlider('SILENT_AIM_FOV_THICKNESS', {
+    Text = 'FOV Thickness',
+    Default = 1,
+    Min = 0,
+    Max = 10,
+    Rounding = 0,
+    Compact = false,
+})
 
--- Options.SILENT_AIM_FOV_COLOR:OnChanged(function()
--- 	SilentAimEnv.Functions:Set('FOVColor', Options.SILENT_AIM_FOV_COLOR.Value)
--- end)
+Options.SILENT_AIM_FOV_THICKNESS:OnChanged(function()
+	FovEnv.Thickness = Options.SILENT_AIM_FOV_THICKNESS.Value
+end)
+
+
+-- [[ Customize ESP Color ]]
+SilentAimGroupBox:AddLabel('FOV Color'):AddColorPicker('SILENT_AIM_FOV_COLOR', {
+    Default = Color3.fromRGB(54, 57, 241),
+    Title = 'FOV Color',
+})
+
+Options.SILENT_AIM_FOV_COLOR:OnChanged(function()
+	FovEnv.Color = Options.SILENT_AIM_FOV_COLOR.Value
+end)
 
 -- // Visual Left Group Box
 local VisualGroupBox = Tabs.Visual:AddLeftGroupbox('Wall Hack')
